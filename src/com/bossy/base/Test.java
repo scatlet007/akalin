@@ -1,7 +1,6 @@
 package com.bossy.base;
 
 import java.io.File;
-import java.util.ArrayList;
 
 public class Test {
 	public static void main(String[] args){
@@ -21,6 +20,7 @@ public class Test {
 		System.out.println("Book ok!!");*/
 		File file=new File("E:\\上市新书.xls");
 		//ExcelOpt.readExcel(file);
+		ExcelOpt excelOpt=new ExcelOpt();
 		System.out.print(ExcelOpt.readExcel(file));
 	}
 

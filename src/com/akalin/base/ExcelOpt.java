@@ -33,7 +33,7 @@ public class ExcelOpt {
 	*@param list 数据源，属性为List<List<Object>>
 	*@jxl.jar 版本 ：2.6
 	*/
-	public static void writeExcel(String fileName,List<List<Object>> list){
+	public void writeExcel(String fileName,List<List<Object>> list){
 		WritableWorkbook wwb=null;
 		try{
 			//首先要用Workbook类的工厂方法创建一个可写入的工作簿(Workbook)对象
@@ -81,7 +81,7 @@ public class ExcelOpt {
 	*@throws Exception
 	*@roseuid:
 	*/
-	public static void exceportExcelFile(String inputFile,String outputFile,List dataList) throws Exception{
+	public void exceportExcelFile(String inputFile,String outputFile,List dataList) throws Exception{
 		//用模版文件构造poi
 		POIFSFileSystem fs=new POIFSFileSystem(new FileInputStream(inputFile));
 		//创建模版工作表
@@ -155,7 +155,7 @@ public class ExcelOpt {
 	*@param columnName 表单表头值
 	*@param ve 要导出的数据值
 	*/
-	public static void writeExcelBo(String fos,String[] columnName,List<List<Object>> ve){
+	public void writeExcelBo(String fos,String[] columnName,List<List<Object>> ve){
 		jxl.write.WritableWorkbook wwb;
 		try{
 			wwb=Workbook.createWorkbook(new File(fos));
@@ -190,9 +190,10 @@ public class ExcelOpt {
 	 * @param 列名数组
 	 * @return 返回数据
 	 */
-	public static List<List<Object>> readExcel(File file,String[] columnName){
+	public List<List<Object>> readExcel(File file,String[] columnName){
 		//StringBuffer sb=new StringBuffer();
 		List<List<Object>> list=new ArrayList<List<Object>>();
+		List<Integer> col=new ArrayList<Integer>();
 		Workbook wb=null;
 		try{
 			//构造Workbook对象
@@ -209,25 +210,39 @@ public class ExcelOpt {
 		Sheet[] sheet=wb.getSheets();
 		if(sheet!=null&&sheet.length>0){
 			//对每个工作表进行循环
+			int a=0;
 			for(int i=0;i<sheet.length;i++){
-				//得到当前工作表的行数
+	   			//得到当前工作表的行数
 				int rowNum=sheet[i].getRows();
-				//得到当前行的所有单元格
-				/*for(int j=0;j<sheet[i].getColumns();j++){
-					Cell[] cells=sheet[i].getRow(j);
-					if(cells!=null&&cells.length>0){
-						//对每个单元格进行循环
-						for(int k=0;k<cells.length;k++){
-							//读取当前单元格的值
-							String cellValue=cells[k].getContents();
-							sb.append(cellValue+"\t");
+				//先匹配表头值
+				Cell[] cell=sheet[0].getRow(0);
+				if(a==0){
+					for(int c=0;c<columnName.length;c++){
+						for(int r=c;r<cell.length;r++){
+							if(columnName[c].equals(cell[r].getContents())){
+								col.add(r);
+							}
 						}
 					}
-					sb.append("\r\n");
-				}*/
-				//匹配表头值，得到要写入的列下标
-				
-				//sb.append("\r\n");
+					a=1;
+				}
+				//得到当前行的所有单元格
+				//if(i!=0){
+					for(int j=0;j<rowNum;j++){
+						Cell[] cells=sheet[i].getRow(j);
+						if(cells!=null&&cells.length>0){
+							//对每个单元格进行循环
+							List<Object> list2=new ArrayList<Object>();
+							for(int k=0;k<col.size();k++){
+								//读取当前单元格的值
+								String cellValue=cells[col.get(k)].getContents();
+								list2.add(cellValue);
+							}
+							list.add(list2);
+							//list2.clear();
+						}
+					}
+				//}    
 			}
 		}
 		//最后关闭资源，释放内存

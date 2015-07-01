@@ -207,7 +207,7 @@ public class ExcelOpt {
 				//得到当前工作表的行数
 				int rowNum=sheet[i].getRows();
 				//得到当前行的所有单元格
-				for(int j=0;j<sheet[i].getColumns();j++){
+				for(int j=0;j<rowNum;j++){
 					Cell[] cells=sheet[i].getRow(j);
 					if(cells!=null&&cells.length>0){
 						//对每个单元格进行循环
